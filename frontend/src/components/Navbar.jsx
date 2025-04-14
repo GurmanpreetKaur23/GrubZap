@@ -12,11 +12,17 @@ export default function Navbar() {
   const isProfilePage = location.pathname === "/profile";
   const navigate = useNavigate();
 
-  // console.log("NAVBAR:", userData);
   return (
-    <div className="w-full h-20 flex items-center justify-between shadow-md px-8  mb-12">
+    <div className="w-full h-20 flex items-center justify-between shadow-md px-8 mb-12 bg-[#FFD54F]">
       <Link to="/home">
-        <h1 className="text-3xl font-bold">FoodOS</h1>
+        <h1 className="text-10xl font-bold">
+        <img
+  src="/assets/GrubZap - Without Background (1).png"
+  alt="GrubZap Logo"
+  className="h-32 w-auto transition-transform duration-300 ease-in-out hover:scale-110"
+/>
+
+        </h1>
       </Link>
       <div
         style={
@@ -26,7 +32,6 @@ export default function Navbar() {
         }
         className="flex items-center justify-between gap-3"
       >
-        {" "}
         {location.pathname !== "/checkout" &&
           location.pathname !== "/profile" && <SearchBar />}
         <div className="flex gap-2.5 ml-0">
@@ -35,38 +40,32 @@ export default function Navbar() {
               onClick={() => {
                 navigate("/checkout");
               }}
-              className={`p-3 bg-${
-                isCheckoutPage ? "amber-500" : "amber-400"
+              className={`p-3 ${
+                isCheckoutPage ? "bg-[#F9A825]" : "bg-[#FFB300]"
               } text-white rounded-md 
-            ${
-              isCheckoutPage
-                ? ""
-                : "hover:bg-amber-500 hover:-translate-y-1 hover:shadow-lg duration-100"
-            }`}
+              ${
+                isCheckoutPage
+                  ? ""
+                  : "hover:bg-[#F9A825] hover:-translate-y-1 hover:shadow-lg duration-100"
+              }`}
             >
               <ShoppingCartIcon />
             </button>
           </Tooltip>
-          {/* <FormControlLabel
-            sx={{ color: "text.primary" }}
-            control={
-              <Switch checked={!invisible} onChange={handleBadgeVisibility} />
-            }
-            label="Show Badge"
-          /> */}
+
           <Tooltip title="Profile" placement="bottom-start">
             <button
               onClick={() => {
                 navigate("/profile");
               }}
-              className={`p-3 bg-${
-                isProfilePage ? "amber-500" : "amber-400"
+              className={`p-3 ${
+                isProfilePage ? "bg-[#F9A825]" : "bg-[#FFB300]"
               } text-white rounded-md 
-            ${
-              isProfilePage
-                ? ""
-                : "hover:bg-amber-500 hover:-translate-y-1 hover:shadow-lg duration-100"
-            }`}
+              ${
+                isProfilePage
+                  ? ""
+                  : "hover:bg-[#F9A825] hover:-translate-y-1 hover:shadow-lg duration-100"
+              }`}
             >
               <PersonIcon />
             </button>
