@@ -7,15 +7,15 @@ import { yellow } from "@mui/material/colors";
 const RestoCard = ({ resto }) => {
   return (
     <Link
-      to={`/restaurant/${resto.restaurant_id}`} 
+      to={`/restaurant/${resto.restaurant_id}`}
       className="hover:no-underline"
       state={{ id: resto.restaurant_id }}
     >
-      <div className="mb-8 h-96 w-72 overflow-hidden rounded-md bg-white text-zinc-700 shadow-md transition-transform duration-200 hover:-translate-y-2 hover:scale-105 hover:shadow-xl">
+      <div className="mb-8 h-96 w-72 overflow-hidden rounded-md bg-[#FFF8E1] text-[#5D4037] shadow-md transition-transform duration-200 hover:-translate-y-2 hover:scale-105 hover:shadow-xl">
         {/* ✅ Restaurant Image */}
         <div className="relative h-2/3 overflow-hidden">
           <img
-            src={resto.img_src} 
+            src={resto.img_src}
             alt={resto.name}
             className="h-full w-full object-cover"
           />
@@ -41,7 +41,7 @@ const RestoCard = ({ resto }) => {
 const RestoCardView = ({ restaurants }) => {
   if (!restaurants.length) {
     return (
-      <div className="text-center text-lg font-semibold text-gray-700">
+      <div className="text-center text-lg font-semibold text-[#5D4037]">
         No restaurants found.
       </div>
     );
@@ -58,9 +58,9 @@ const RestoCardView = ({ restaurants }) => {
 
 export default function HeroResto({ restaurants }) {
   return (
-    <div className="bg-blur2 rounded-md bg-amber-300 p-8 pb-20">
-      <h1 className="mb-8 text-2xl font-semibold">
-        Top restaurant chains in Manipal
+    <div className="bg-[#FFE082] rounded-md p-8 pb-20">
+      <h1 className="mb-8 text-2xl font-semibold text-[#5D4037]">
+        Top restaurant chains in Punjab
       </h1>
       <RestoCardView restaurants={restaurants} />
     </div>
