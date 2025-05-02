@@ -7,28 +7,22 @@ import { Card, CardContent } from "@/components/ui/card";
 const teamMembers = [
   {
     id: 1,
-    name: "Sarah Johnson",
+    name: "Gurmanpreet Kaur",
     role: "Founder & CEO",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
     description: "Sarah founded GrubZap in 2020 with a mission to make food delivery more accessible and efficient."
   },
+  
   {
     id: 2,
-    name: "Michael Chen",
-    role: "CTO",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-    description: "Michael leads our tech team and has developed the innovative delivery algorithm that powers GrubZap."
-  },
-  {
-    id: 3,
-    name: "Priya Patel",
+    name: "Gurnimrat Singh",
     role: "Head of Operations",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
     description: "Priya ensures that GrubZap operations run smoothly and efficiently across all our service areas."
   },
   {
-    id: 4,
-    name: "David Wilson",
+    id: 3,
+    name: "Guntas Singh",
     role: "Marketing Director",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
     description: "David crafts our brand strategy and handles all marketing initiatives to grow the GrubZap community."
@@ -54,7 +48,7 @@ const About = () => {
             <div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4 text-grubzap-dark">Our Story</h2>
               <p className="text-gray-600 mb-4">
-                GrubZap was founded in 2020 with a simple mission: to connect hungry people with delicious food from local restaurants, delivered quickly and efficiently.
+                GrubZap was founded in 2025 with a simple mission: to connect hungry people with delicious food from local restaurants, delivered quickly and efficiently.
               </p>
               <p className="text-gray-600 mb-4">
                 What started as a small operation in one city has grown into a nationwide service, connecting thousands of restaurants with millions of food lovers across the country.
