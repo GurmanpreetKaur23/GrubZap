@@ -47,9 +47,9 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/44d718c2-c665-4c4a-b504-d07049172178.png" 
               alt="GrubZap Logo" 
-              className="h-10 w-auto animate-float" 
+              className="h-14 md:h-16 w-auto animate-float" 
             />
-            <span className="font-display font-bold text-xl text-grubzap-dark">
+            <span className="font-display font-bold text-2xl md:text-3xl text-grubzap-dark">
               Grub<span className="text-grubzap-orange">Zap</span>
             </span>
           </a>
