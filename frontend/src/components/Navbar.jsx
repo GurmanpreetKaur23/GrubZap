@@ -15,14 +15,15 @@ export default function Navbar() {
   return (
     <div className="w-full h-20 flex items-center justify-between shadow-md px-8 mb-12 bg-[#FFD54F]">
       <Link to="/home">
-        <h1 className="text-10xl font-bold">
-        <img
-  src="/assets/GrubZap - Without Background (1).png"
-  alt="GrubZap Logo"
-  className="h-32 w-auto transition-transform duration-300 ease-in-out hover:scale-110"
-/>
+      <h1 className="text-2xl md:text-6xl font-bold flex items-center gap-0">
+  <span className="text-2xl md:text-6xl">GrubZap</span>
+  <img
+    src="/assets/GrubZap%20-%20Without%20Background%20(1).png"
+    alt="GrubZap Logo"
+    className="h-24 md:h-32 w-auto transition-transform hover:scale-110"
+  />
+</h1>
 
-        </h1>
       </Link>
       <div
         style={
