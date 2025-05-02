@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -10,22 +9,21 @@ const teamMembers = [
     name: "Gurmanpreet Kaur",
     role: "Founder & CEO",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-    description: "Sarah founded GrubZap in 2020 with a mission to make food delivery more accessible and efficient."
+    description: "Gurmanpreet founded GrubZap in 2025 with a mission to make food delivery more accessible and efficient."
   },
-  
   {
     id: 2,
     name: "Gurnimrat Singh",
     role: "Head of Operations",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
-    description: "Priya ensures that GrubZap operations run smoothly and efficiently across all our service areas."
+    description: "Gurnimrat ensures that GrubZap operations run smoothly and efficiently across all our service areas."
   },
   {
     id: 3,
-    name: "Guntas Singh",
+    name: "Priya Patel",
     role: "Marketing Director",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-    description: "David crafts our brand strategy and handles all marketing initiatives to grow the GrubZap community."
+    description: "Priya crafts our brand strategy and handles all marketing initiatives to grow the GrubZap community."
   }
 ];
 
