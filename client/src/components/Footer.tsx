@@ -18,7 +18,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img 
-                src="/lovable-uploads/44d718c2-c665-4c4a-b504-d07049172178.png" 
+                src="src\components\grubzap logo.png" 
                 alt="GrubZap Logo" 
                 className="h-10 w-auto" 
               />
