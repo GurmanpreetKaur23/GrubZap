@@ -22,7 +22,7 @@ const Navbar = () => {
           </Button>
           <Link to="/" className="flex items-center gap-2">
             <img 
-              src="/lovable-uploads/44d718c2-c665-4c4a-b504-d07049172178.png" 
+              src="src\components\grubzap logo.png" 
               alt="GrubZap Logo" 
               className="h-14 md:h-16 w-auto animate-float" 
             />
