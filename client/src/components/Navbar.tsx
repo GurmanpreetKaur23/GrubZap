@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import { ShoppingCart, Menu, Search, User } from "lucide-react";
+import { ShoppingCart, Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -30,39 +31,36 @@ const Navbar = () => {
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
 
-    // Check login status and load user info from localStorage
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      setIsLoggedIn(true);
-      setUserName(localStorage.getItem("userName"));
-      setUserAvatar(localStorage.getItem("userAvatar"));
-    } else {
-      setIsLoggedIn(false);
-    }
-
-    // Listen for storage changes to update login status
-    const handleStorageChange = () => {
-      const token = localStorage.getItem("jwtToken");
-      setIsLoggedIn(!!token);
-      setUserName(localStorage.getItem("userName"));
-      setUserAvatar(localStorage.getItem("userAvatar"));
-    };
-    window.addEventListener("storage", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", updateCartCount);
-      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
+  useEffect(() => {
+    // Update login state on location change to force re-render
+    const token = localStorage.getItem("jwtToken");
+    setIsLoggedIn(!!token);
+  }, [location]);
+
   const handleLogout = () => {
     localStorage.removeItem("jwtToken");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userAvatar");
     setIsLoggedIn(false);
-    setUserName('');
-    setUserAvatar('');
     navigate("/login");
+  };
+
+  const handleSearchToggle = () => {
+    setIsSearchOpen(!isSearchOpen);
+    setSearchQuery("");
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // For now, just log the query or navigate to a search page
+      console.log("Search query:", searchQuery);
+      // Example: navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      setIsSearchOpen(false);
+    }
   };
 
   return (
@@ -102,9 +100,31 @@ const Navbar = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button size="icon" variant="ghost" className="hidden md:flex" aria-label="Search">
-            <Search className="h-5 w-5" />
-          </Button>
+          {isSearchOpen ? (
+            <form onSubmit={handleSearchSubmit} className="flex items-center">
+              <input
+                type="text"
+                className="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-grubzap-orange"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={handleSearchToggle}
+                aria-label="Close search"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </form>
+          ) : (
+            <Button size="icon" variant="ghost" className="hidden md:flex" aria-label="Search" onClick={handleSearchToggle}>
+              <Search className="h-5 w-5" />
+            </Button>
+          )}
           <Button
             size="icon"
             variant="outline"
@@ -133,23 +153,12 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <div className="flex items-center gap-3">
-              {/* Avatar and Name */}
-              <div className="flex items-center gap-2">
-                <img
-                  src={userAvatar || '/default-avatar.png'}
-                  alt="User Avatar"
-                  className="h-8 w-8 rounded-full"
-                />
-                <span className="font-medium">{userName}</span>
-              </div>
-              <Button
-                className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-            </div>
+            <Button
+              className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
           )}
         </div>
       </div>
