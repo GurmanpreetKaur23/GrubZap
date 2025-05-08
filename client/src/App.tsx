@@ -13,7 +13,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/Signup"; // ✅ Added
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
-
+import Cart from "./pages/Cart" ;
 
 const queryClient = new QueryClient();
 
@@ -31,6 +31,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />       {/* ✅ Added */}
           <Route path="/signup" element={<SignUp />} />     {/* ✅ Added */}
+          <Route path="/cart" element={<Cart />} /> 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
