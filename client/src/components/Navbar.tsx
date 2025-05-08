@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, Search } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { ShoppingCart, Menu, Search, User } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,10 +29,41 @@ const Navbar = () => {
 
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
+
+    // Check login status and load user info from localStorage
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      setIsLoggedIn(true);
+      setUserName(localStorage.getItem("userName"));
+      setUserAvatar(localStorage.getItem("userAvatar"));
+    } else {
+      setIsLoggedIn(false);
+    }
+
+    // Listen for storage changes to update login status
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("jwtToken");
+      setIsLoggedIn(!!token);
+      setUserName(localStorage.getItem("userName"));
+      setUserAvatar(localStorage.getItem("userAvatar"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
       window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userAvatar");
+    setIsLoggedIn(false);
+    setUserName('');
+    setUserAvatar('');
+    navigate("/login");
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
@@ -78,28 +112,45 @@ const Navbar = () => {
             onClick={() => navigate("/cart")}
             aria-label="Cart"
           >
-            <Link to="/cart" className="relative">
-  <Button size="icon" variant="outline" aria-label="Cart">
-    <ShoppingCart className="h-5 w-5 text-grubzap-dark" />
-    {cartCount > 0 && (
-      <span className="absolute -top-1 -right-1 bg-grubzap-red text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
-        {cartCount}
-      </span>
-    )}
-  </Button>
-</Link>
-
+            <ShoppingCart className="h-5 w-5 text-grubzap-dark" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-grubzap-red text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Button>
-          <Link to="/login">
-            <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
-              Sign In
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
-              Sign Up
-            </Button>
-          </Link>
+          {!isLoggedIn ? (
+            <>
+              <Link to="/login">
+                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
+                  Sign Up
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <div className="flex items-center gap-3">
+              {/* Avatar and Name */}
+              <div className="flex items-center gap-2">
+                <img
+                  src={userAvatar || '/default-avatar.png'}
+                  alt="User Avatar"
+                  className="h-8 w-8 rounded-full"
+                />
+                <span className="font-medium">{userName}</span>
+              </div>
+              <Button
+                className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -114,16 +165,27 @@ const Navbar = () => {
               <Link to="/about" className="font-medium py-2 hover:text-grubzap-orange transition-colors">About</Link>
               <Link to="/contact" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Contact</Link>
               <Link to="/cart" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Cart</Link>
-              <Link to="/login" className="w-full">
-                <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
-                  Sign In
+              {!isLoggedIn ? (
+                <>
+                  <Link to="/login" className="w-full">
+                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link to="/signup" className="w-full">
+                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Button
+                  className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2"
+                  onClick={handleLogout}
+                >
+                  Logout
                 </Button>
-              </Link>
-              <Link to="/signup" className="w-full">
-                <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
-                  Sign Up
-                </Button>
-              </Link>
+              )}
             </div>
           </div>
         </div>
