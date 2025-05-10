@@ -1,6 +1,11 @@
-import foodModel from "../models/foodModel.js"; // Make sure the path is relative to this file
+import foodModel from "../models/foodModel.js";
+import fs from 'fs';
 
-const addFood = async (req, res) => {
+// Add food item
+export const addFood = async (req, res) => {
+    console.log("req.file:", req.file);
+    console.log("req.body:", req.body);
+
     const image_filename = req.file?.filename;
 
     if (!image_filename) {
@@ -24,4 +29,33 @@ const addFood = async (req, res) => {
     }
 };
 
-export { addFood };
+// List all food items
+export const listFood = async (req, res) => {
+    try {
+        const foods = await foodModel.find({});
+        res.json({ success: true, data: foods });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+// Remove food item
+export const removeFood = async (req, res) => {
+    try {
+        const food = await foodModel.findById(req.body.id);
+        if (!food) {
+            return res.status(404).json({ success: false, message: "Food item not found" });
+        }
+
+        fs.unlink(`uploads/${food.image}`, (err) => {
+            if (err) console.error("Image deletion error:", err);
+        });
+
+        await foodModel.findByIdAndDelete(req.body.id);
+        res.json({ success: true, message: "Food removed" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
