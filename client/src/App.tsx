@@ -10,7 +10,7 @@ import Restaurants from "./pages/Restaurants";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import SignUp from "./pages/Signup"; // ✅ Added
+import SignUp from "./pages/SignUp"; // ✅ Added
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart" ;

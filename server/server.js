@@ -1,29 +1,27 @@
-// server.js
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const AuthRouter = require('./routes/auth');
-
-// Load environment variables
+const CartRouter = require('./routes/cart');
 require('dotenv').config();
 require('./models/db');
 
-// Middleware to parse JSON request bodies
-app.use(express.json()); // Ensure this is before your routes!
-
-// Middleware for CORS
+// ✅ Correct order of middleware
 app.use(cors());
+app.use(express.json()); // This MUST be before route definitions
 
+// ✅ Define routes after middleware
 app.use('/auth', AuthRouter);
-app.use('/products' , AuthRouter) ;
+app.use('/products', AuthRouter); // fix if this is a placeholder
+app.use('/cart', CartRouter);
 
-// Simple route to test the server
+// Test route
 app.get('/ping', (req, res) => {
   res.send('PONG');
 });
 
-// Start the server and listen on the given port
+// Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
