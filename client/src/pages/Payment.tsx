@@ -246,7 +246,7 @@ const Payment = () => {
                       className="bg-grubzap-orange hover:bg-grubzap-darkOrange"
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Processing...' : Pay $${calculateTotal().toFixed(2)}}
+                      {isProcessing ? 'Processing...' : `Pay $${calculateTotal().toFixed(2)}`}
                     </Button>
                   </div>
                 </form>

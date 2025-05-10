@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { useToast } from '../hooks/use-toast';
 
 interface CartItem {
   id: number;
@@ -105,16 +105,17 @@ const Cart = () => {
   };
   
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center">
-          <p>Loading your cart...</p>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow flex items-center justify-center">
+        <p>Loading your cart...</p>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -244,7 +245,7 @@ const Cart = () => {
                     >
                       Proceed to Checkout
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline" 
                       className="w-full"
                       onClick={continueShopping}
