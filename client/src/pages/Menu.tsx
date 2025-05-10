@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { MapPin } from "lucide-react";
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Card, CardContent } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
+import { MapPin } from 'lucide-react';
 
 // This would normally come from an API based on location
 const locations = [
@@ -127,7 +127,8 @@ const Menu = () => {
   const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredItems, setFilteredItems] = useState(menuItems);
-  
+  const [cartItems, setCartItems] = useState([]);
+
   useEffect(() => {
     // Filter items based on location and search query
     let filtered = menuItems;
@@ -148,7 +149,35 @@ const Menu = () => {
     
     setFilteredItems(filtered);
   }, [selectedLocation, searchQuery]);
-  
+
+  const addToCart = (item) => {
+  setCartItems(prevItems => {
+    const existingItem = prevItems.find(i => i.id === item.id);
+    let updatedCart;
+    
+    if (existingItem) {
+      updatedCart = prevItems.map(i =>
+        i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+      );
+    } else {
+      updatedCart = [...prevItems, { ...item, quantity: 1 }];
+    }
+
+    // ✅ Save to localStorage
+    localStorage.setItem('grubzap-cart', JSON.stringify(updatedCart));
+    return updatedCart;
+  });
+};
+
+useEffect(() => {
+  const storedCart = localStorage.getItem('grubzap-cart');
+  if (storedCart) {
+    setCartItems(JSON.parse(storedCart));
+  }
+}, []);
+
+
+
   const categorizedItems = categorizeMenuItems(filteredItems);
 
   return (
@@ -222,7 +251,10 @@ const Menu = () => {
                         </div>
                         <p className="text-gray-600 text-sm">{item.description}</p>
                         <div className="mt-4 flex">
-                          <Button className="w-full bg-grubzap-orange hover:bg-grubzap-darkOrange">
+                          <Button 
+                            className="w-full bg-grubzap-orange hover:bg-grubzap-darkOrange"
+                            onClick={() => addToCart(item)}
+                          >
                             Add to Cart
                           </Button>
                         </div>

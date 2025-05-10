@@ -14,6 +14,7 @@ import SignUp from "./pages/SignUp"; // ✅ Added
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart" ;
+import ProductLanding  from "./pages/ProductLanding"; 
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/signup" element={<SignUp />} />     {/* ✅ Added */}
           <Route path="/cart" element={<Cart />} /> 
           <Route path="*" element={<NotFound />} />
+          <Route path="/productlanding" element={<ProductLanding />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

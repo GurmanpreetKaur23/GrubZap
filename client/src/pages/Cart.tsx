@@ -7,8 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// This would normally come from a global cart context or state management
-// For now, we'll use localStorage to persist cart items
 interface CartItem {
   id: number;
   name: string;

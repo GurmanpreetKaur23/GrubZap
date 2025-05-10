@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ShoppingCart, Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
@@ -15,31 +15,21 @@ const Navbar = () => {
   useEffect(() => {
     const updateCartCount = () => {
       try {
-        const storedCart = localStorage.getItem("grubzap-cart");
-        if (storedCart) {
-          const cart = JSON.parse(storedCart);
-          setCartCount(cart.length);
-        } else {
-          setCartCount(0);
-        }
+        const storedCart = JSON.parse(localStorage.getItem("grubzap-cart"));
+        setCartCount(storedCart?.length || 0);
       } catch (error) {
-        console.error("Error reading cart from localStorage:", error);
+        console.error("Cart error:", error);
         setCartCount(0);
       }
     };
 
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
-
-    return () => {
-      window.removeEventListener("storage", updateCartCount);
-    };
+    return () => window.removeEventListener("storage", updateCartCount);
   }, []);
 
   useEffect(() => {
-    // Update login state on location change to force re-render
-    const token = localStorage.getItem("jwtToken");
-    setIsLoggedIn(!!token);
+    setIsLoggedIn(!!localStorage.getItem("jwtToken"));
   }, [location]);
 
   const handleLogout = () => {
@@ -56,81 +46,72 @@ const Navbar = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // For now, just log the query or navigate to a search page
-      console.log("Search query:", searchQuery);
-      // Example: navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
     }
   };
 
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Menu", path: "/menu" },
+    { name: "Restaurants", path: "/restaurants" },
+    { name: "Discover", path: "/productlanding" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
+
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-        {/* Logo & Mobile Menu Button */}
+        {/* Logo and Mobile Toggle */}
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Menu className="h-6 w-6" />
           </Button>
           <Link to="/" className="flex items-center gap-2">
-            <img
-              src="/grubzap logo.png"
-              alt="GrubZap Logo"
-              className="h-14 md:h-16 w-auto animate-float"
-            />
+            <img src="/grubzap logo.png" alt="GrubZap Logo" className="h-14 md:h-16 w-auto animate-float" />
             <span className="font-display font-bold text-2xl md:text-3xl text-grubzap-dark">
               Grub<span className="text-grubzap-orange">Zap</span>
             </span>
           </Link>
         </div>
 
-        {/* Desktop Menu */}
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          <Link to="/" className="font-medium hover:text-grubzap-orange transition-colors">Home</Link>
-          <Link to="/menu" className="font-medium hover:text-grubzap-orange transition-colors">Menu</Link>
-          <Link to="/restaurants" className="font-medium hover:text-grubzap-orange transition-colors">Restaurants</Link>
-          <Link to="/about" className="font-medium hover:text-grubzap-orange transition-colors">About</Link>
-          <Link to="/contact" className="font-medium hover:text-grubzap-orange transition-colors">Contact</Link>
+          {navLinks.map((link) => (
+            <Link key={link.path} to={link.path} className="font-medium hover:text-grubzap-orange transition-colors">
+              {link.name}
+            </Link>
+          ))}
         </div>
 
-        {/* Actions */}
+        {/* Search, Cart, and Auth Buttons */}
         <div className="flex items-center gap-3">
           {isSearchOpen ? (
             <form onSubmit={handleSearchSubmit} className="flex items-center">
               <input
                 type="text"
-                className="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-grubzap-orange"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
+                className="border px-2 py-1 rounded-md focus:ring-2 focus:ring-grubzap-orange"
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={handleSearchToggle}
-                aria-label="Close search"
-              >
+              <Button variant="ghost" size="icon" onClick={handleSearchToggle}>
                 <X className="h-5 w-5" />
               </Button>
             </form>
           ) : (
-            <Button size="icon" variant="ghost" className="hidden md:flex" aria-label="Search" onClick={handleSearchToggle}>
+            <Button size="icon" variant="ghost" className="hidden md:flex" onClick={handleSearchToggle}>
               <Search className="h-5 w-5" />
             </Button>
           )}
+
           <Button
             size="icon"
             variant="outline"
             className="relative"
             onClick={() => navigate("/cart")}
-            aria-label="Cart"
           >
             <ShoppingCart className="h-5 w-5 text-grubzap-dark" />
             {cartCount > 0 && (
@@ -139,24 +120,18 @@ const Navbar = () => {
               </span>
             )}
           </Button>
+
           {!isLoggedIn ? (
             <>
               <Link to="/login">
-                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
-                  Sign In
-                </Button>
+                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">Sign In</Button>
               </Link>
               <Link to="/signup">
-                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">
-                  Sign Up
-                </Button>
+                <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange">Sign Up</Button>
               </Link>
             </>
           ) : (
-            <Button
-              className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange"
-              onClick={handleLogout}
-            >
+            <Button className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange" onClick={handleLogout}>
               Logout
             </Button>
           )}
@@ -168,30 +143,23 @@ const Navbar = () => {
         <div className="md:hidden bg-white border-t py-4">
           <div className="container mx-auto px-4">
             <div className="flex flex-col space-y-3">
-              <Link to="/" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Home</Link>
-              <Link to="/menu" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Menu</Link>
-              <Link to="/restaurants" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Restaurants</Link>
-              <Link to="/about" className="font-medium py-2 hover:text-grubzap-orange transition-colors">About</Link>
-              <Link to="/contact" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Contact</Link>
+              {navLinks.map((link) => (
+                <Link key={link.path} to={link.path} className="font-medium py-2 hover:text-grubzap-orange transition-colors">
+                  {link.name}
+                </Link>
+              ))}
               <Link to="/cart" className="font-medium py-2 hover:text-grubzap-orange transition-colors">Cart</Link>
               {!isLoggedIn ? (
                 <>
-                  <Link to="/login" className="w-full">
-                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
-                      Sign In
-                    </Button>
+                  <Link to="/login">
+                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">Sign In</Button>
                   </Link>
-                  <Link to="/signup" className="w-full">
-                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">
-                      Sign Up
-                    </Button>
+                  <Link to="/signup">
+                    <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2">Sign Up</Button>
                   </Link>
                 </>
               ) : (
-                <Button
-                  className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2"
-                  onClick={handleLogout}
-                >
+                <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2" onClick={handleLogout}>
                   Logout
                 </Button>
               )}
