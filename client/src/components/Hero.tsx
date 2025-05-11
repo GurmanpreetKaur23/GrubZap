@@ -1,9 +1,20 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState(''); // State to store the search query
+  const navigate = useNavigate(); // Hook to navigate programmatically
+
+  // Handle search submit
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Redirect to the search results page with the query as a URL parameter
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   return (
     <section className="relative bg-gradient-to-r from-grubzap-dark to-grubzap-dark/80 text-white py-20 md:py-32">
       <div className="absolute inset-0 bg-[url('/lovable-uploads/44d718c2-c665-4c4a-b504-d07049172178.png')] opacity-10 bg-repeat"></div>
@@ -24,9 +35,14 @@ const Hero = () => {
               <input 
                 type="text" 
                 placeholder="Search for food or restaurants..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Update state on input change
                 className="py-4 px-3 w-full text-gray-800 focus:outline-none rounded-full"
               />
-              <Button className="m-1 bg-grubzap-orange hover:bg-grubzap-darkOrange rounded-full px-6">
+              <Button 
+                className="m-1 bg-grubzap-orange hover:bg-grubzap-darkOrange rounded-full px-6"
+                onClick={handleSearch} // Trigger search on button click
+              >
                 Search
               </Button>
             </div>

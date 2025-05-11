@@ -32,13 +32,13 @@ const Navbar = () => {
 
   // Update isLoggedIn state based on jwtToken in localStorage
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("jwtToken"));
+    setIsLoggedIn(!!localStorage.getItem("token"));
   }, [location]); // Re-run when location changes
 
   // Handle Logout
   const handleLogout = () => {
-    localStorage.removeItem("jwtToken"); // Remove JWT token on logout
-    setIsLoggedIn(false); // Update state
+    localStorage.removeItem("token"); // Remove JWT token on logout
+    setIsLoggedIn(""); // Update state
     navigate("/login"); // Redirect to login page
   };
 
