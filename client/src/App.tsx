@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
@@ -20,6 +21,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -35,6 +37,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      <Toaster />
     </BrowserRouter>
   </QueryClientProvider>
 );
