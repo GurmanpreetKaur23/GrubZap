@@ -20,7 +20,8 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+
   useEffect(() => {
     const loadCartItems = () => {
       try {
@@ -34,96 +35,118 @@ const Cart = () => {
         setIsLoading(false);
       }
     };
-    
+
     loadCartItems();
   }, []);
-  
+
   const updateCart = (newCart: CartItem[]) => {
     setCartItems(newCart);
     localStorage.setItem('grubzap-cart', JSON.stringify(newCart));
   };
-  
+
   const increaseQuantity = (itemId: number) => {
-    const updatedCart = cartItems.map(item => 
+    if (!token) {
+      toast({ title: 'Login required', description: 'Please login to modify your cart.' });
+      navigate('/login');
+      return;
+    }
+
+    const updatedCart = cartItems.map(item =>
       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
     );
     updateCart(updatedCart);
   };
-  
+
   const decreaseQuantity = (itemId: number) => {
-    const updatedCart = cartItems.map(item => 
-      item.id === itemId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    if (!token) {
+      toast({ title: 'Login required', description: 'Please login to modify your cart.' });
+      navigate('/login');
+      return;
+    }
+
+    const updatedCart = cartItems.map(item =>
+      item.id === itemId && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
     );
     updateCart(updatedCart);
   };
-  
+
   const removeItem = (itemId: number) => {
+    if (!token) {
+      toast({ title: 'Login required', description: 'Please login to remove items from your cart.' });
+      navigate('/login');
+      return;
+    }
+
     const updatedCart = cartItems.filter(item => item.id !== itemId);
     updateCart(updatedCart);
     toast({
-      title: "Item removed from cart",
-      description: "Your cart has been updated",
+      title: 'Item removed from cart',
+      description: 'Your cart has been updated',
     });
   };
-  
+
   const clearCart = () => {
+    if (!token) {
+      toast({ title: 'Login required', description: 'Please login to clear your cart.' });
+      navigate('/login');
+      return;
+    }
+
     updateCart([]);
     toast({
-      title: "Cart cleared",
-      description: "All items have been removed from your cart",
+      title: 'Cart cleared',
+      description: 'All items have been removed from your cart',
     });
   };
-  
+
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
       const price = parseFloat(item.price.replace('$', ''));
-      return total + (price * item.quantity);
+      return total + price * item.quantity;
     }, 0);
   };
-  
-  const calculateTax = (subtotal: number) => {
-    return subtotal * 0.08; // 8% tax rate example
-  };
-  
-  const calculateDeliveryFee = () => {
-    return cartItems.length > 0 ? 3.99 : 0;
-  };
-  
+
+  const calculateTax = (subtotal: number) => subtotal * 0.08;
+  const calculateDeliveryFee = () => (cartItems.length > 0 ? 3.99 : 0);
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
     const tax = calculateTax(subtotal);
     const deliveryFee = calculateDeliveryFee();
     return subtotal + tax + deliveryFee;
   };
-  
+
   const proceedToCheckout = () => {
+    if (!token) {
+      toast({ title: 'Login required', description: 'Please login to checkout.' });
+      navigate('/login');
+      return;
+    }
     navigate('/payment');
   };
-  
-  const continueShopping = () => {
-    navigate('/menu');
-  };
-  
-  if (isLoading) {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow flex items-center justify-center">
-        <p>Loading your cart...</p>
-      </main>
-      <Footer />
-    </div>
-  );
-}
 
-  
+  const continueShopping = () => navigate('/menu');
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <p>Loading your cart...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
         <div className="container mx-auto px-4 md:px-6 py-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-8">Your Cart</h1>
-          
+
           {cartItems.length === 0 ? (
             <div className="text-center py-16 space-y-6">
               <div className="flex justify-center">
@@ -159,7 +182,7 @@ const Cart = () => {
                       Clear All
                     </Button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {cartItems.map((item) => (
                       <Card key={item.id} className="overflow-hidden border-gray-100">
@@ -214,7 +237,7 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-24">
                   <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
