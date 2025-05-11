@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "main": "server.js",
-  "type":"module" ,
+  "type": "module",
   "scripts": {
     "server": "nodemon server.js"
   },
@@ -21,5 +21,8 @@
     "nodemon": "^3.1.10",
     "stripe": "^18.1.0",
     "validator": "^13.15.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
   }
 }

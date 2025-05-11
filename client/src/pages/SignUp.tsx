@@ -34,7 +34,7 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignUpFormValues) => {
     try {
-      const response = await fetch('http://localhost:8000/auth/signup', {
+      const response = await fetch('http://localhost:4000/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const SignUp = () => {
         toast.success("Signup successful! Please login.");
         navigate("/login");
       } else {
-        toast.error(result.message || "Signup failed");
+        toast.error(result.msg || result.message || "Signup failed");
       }
     } catch (error) {
       toast.error("An error occurred during signup");
