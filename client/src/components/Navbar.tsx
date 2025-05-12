@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "'components/ui/button'";
+import { Button } from "./ui/button"; // ✅ CORRECT RELATIVE PATH
+
 import { ShoppingCart, Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
