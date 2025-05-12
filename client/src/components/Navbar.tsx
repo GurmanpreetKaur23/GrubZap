@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "'components/ui/button'";
 import { ShoppingCart, Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
@@ -30,15 +30,18 @@ const Navbar = () => {
     return () => window.removeEventListener("storage", updateCartCount);
   }, []);
 
-  // Update isLoggedIn state based on jwtToken in localStorage
+  // Update isLoggedIn state based on jwtToken in localStorage or sessionStorage
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    console.log("Navbar: token in storage:", token);
+    setIsLoggedIn(!!token);
   }, [location]); // Re-run when location changes
 
   // Handle Logout
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove JWT token on logout
-    setIsLoggedIn(""); // Update state
+    console.log("Navbar: token removed, logging out");
+    setIsLoggedIn(false); // Update state to false
     navigate("/login"); // Redirect to login page
   };
 
