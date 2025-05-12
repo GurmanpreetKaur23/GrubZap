@@ -1,30 +1,29 @@
-import express from  "express" 
-import cors from "cors" ;
-import { connectDB } from "./config/db.js";
-import foodRouter from "./routes/foodRoutes.js";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { connectDB } from "./config/db.js"; // Ensure .js extension is added
+import foodRouter from "./routes/foodRoutes.js"; // Ensure .js extension is added
+import userRouter from "./routes/userRoute.js"; // Ensure .js extension is added
+import userModel from "./models/userModel.js"; // Ensure .js extension is added
 
+dotenv.config();
 
-// app config
-const app = express()
-const port = 4000 
+const app = express();
+const port = process.env.PORT || 4000;
 
-// middleware
-app.use(express.json()) ;
-app.use(cors()) ;
+app.use(express.json());
+app.use(cors());
 
-// db connection
-connectDB() ;
+connectDB();
 
-//api endpoint
-app.use("/api/food", foodRouter) ;
-app.use("/images",express.static('uploads'))
-app.get("/" , (req,res)=>{
-    res.send("API WORKING") ;
-}) ;
+app.use("/api/food", foodRouter);
+app.use("/images", express.static("uploads"));
+app.use("/api/user", userRouter);
 
-// run the express server
-app.listen(port , ()=>{
-    console.log(`server is running on ${port}`) ;
-})
+app.get("/", (_req, res) => {
+  res.send("API WORKING");
+});
 
-// mongodb+srv://grubzap:<db_password>@cluster0.3mydztp.mongodb.net/?
+app.listen(port, () => {
+  console.log(`server is running on ${port}`);
+});

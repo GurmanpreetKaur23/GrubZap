@@ -6,13 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Checkbox } from "../components/ui/checkbox";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -34,13 +34,32 @@ const Login = () => {
     },
   });
   
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    // Mock successful login
-    toast.success("Login successful!", {
-      description: "Welcome back to GrubZap!",
-    });
-    navigate("/"); // Redirect to home page
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const response = await fetch('http://localhost:4000/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: data.email, password: data.password })
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        if (data.rememberMe) {
+          localStorage.setItem('token', result.token);
+        } else {
+          sessionStorage.setItem('token', result.token);
+        }
+        toast.success("Login successful!", {
+          description: "Welcome back to GrubZap!",
+        });
+        navigate("/"); // Redirect to home page
+      } else {
+        toast.error(result.msg || "Login failed");
+      }
+    } catch (error) {
+      toast.error("An error occurred during login");
+    }
   };
 
   return (

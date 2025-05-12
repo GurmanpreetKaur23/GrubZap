@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,43 +6,92 @@ import { Star } from "lucide-react";
 const restaurants = [
   {
     id: 1,
-    name: "Pizza Paradise",
-    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
+    name: "Domino's",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-4sYCAwWE13OOMMX0_y8Ht_lOfyPh899V-A&s",
     cuisine: "Italian",
     rating: 4.8,
-    deliveryTime: "20-30 min",
-    deliveryFee: "$2.99",
-    featured: true
+    deliveryTime: "30-40 min",
+    deliveryFee: "₹99",
+    featured: true,
+    category: "Pizza",
+    vegOrNonVeg: "Non-Veg & Veg"
   },
   {
     id: 2,
-    name: "Burger Bliss",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+    name: "McDonald's",
+    image: "https://usimg.sulekha.io/cdn/others/images/extra-value-meal_2024-11-28-01-32-46-962.png",
     cuisine: "American",
     rating: 4.5,
-    deliveryTime: "15-25 min",
-    deliveryFee: "$1.99",
-    featured: false
+    deliveryTime: "20-30 min",
+    deliveryFee: "₹70",
+    featured: false,
+    vegOrNonVeg: "Non-Veg & Veg"
   },
   {
     id: 3,
-    name: "Sushi Supreme",
-    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
-    cuisine: "Japanese",
+    name: "KFC",
+    image: "https://b.zmtcdn.com/data/pictures/chains/5/67755/24697b617bb8aaf5b1c7df9a7074a662.jpg?fit=around|960:500&crop=960:500;*,*",
+    cuisine: "American",
     rating: 4.9,
     deliveryTime: "25-35 min",
-    deliveryFee: "$3.99",
-    featured: true
+    deliveryFee: "₹120",
+    featured: true,
+    vegOrNonVeg: "Non-Veg"
   },
   {
     id: 4,
-    name: "Taco Town",
-    image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+    name: "Taco Bell",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUrO8fZzqyhcLJ4Drm-9nozknExmquvjgPHw&s",
     cuisine: "Mexican",
     rating: 4.7,
+    deliveryTime: "20-30 min",
+    deliveryFee: "₹99",
+    featured: false,
+    vegOrNonVeg: "Non-Veg & Veg"
+  },
+  {
+    id: 5,
+    name: "Sagar Ratna",
+    image: "https://b.zmtcdn.com/data/pictures/chains/8/18597388/48ea07840f0b37f6574b4263083a225a.jpg",
+    cuisine: "Indian",
+    rating: 4.6,
+    deliveryTime: "20-30 min",
+    deliveryFee: "₹80",
+    featured: true,
+    vegOrNonVeg: "Veg"
+  },
+  {
+    id: 6,
+    name: "Starbucks",
+    image: "https://assets.gqindia.com/photos/5cdc75d38e62990b13f38389/4:3/w_1440,h_1080,c_limit/starbucks-cup-hed-2013.jpg",
+    cuisine: "Coffee & Beverages",
+    rating: 4.7,
+    deliveryTime: "25-35 min",
+    deliveryFee: "₹100",
+    featured: false,
+    vegOrNonVeg: "Non-Veg & Veg"
+  },
+  {
+    id: 7,
+    name: "Bikanervala",
+    image: "https://www.rahein.com/images/bikanervala/snacks/south_india_offerings_rahein.png",
+    cuisine: "Indian",
+    rating: 4.6,
     deliveryTime: "15-25 min",
-    deliveryFee: "$2.49",
-    featured: false
+    deliveryFee: "₹75",
+    featured: false,
+    vegOrNonVeg: "Veg"
+  },
+  {
+    id: 8,
+    name: "Wow Momo",
+    image: "https://d4t7t8y8xqo0t.cloudfront.net/app//resized/818X450/group/3502/menu020230613093622.jpg",
+    cuisine: "Indian",
+    rating: 4.5,
+    deliveryTime: "20-30 min",
+    deliveryFee: "₹50",
+    featured: false,
+    vegOrNonVeg: "Non-Veg & Veg"
   }
 ];
 
@@ -59,7 +107,7 @@ const FeaturedRestaurants = () => {
             View All
           </a>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {restaurants.map((restaurant) => (
             <Card key={restaurant.id} className="overflow-hidden card-hover border-gray-100">
@@ -80,6 +128,17 @@ const FeaturedRestaurants = () => {
                   <div>
                     <h3 className="font-bold text-lg text-grubzap-dark">{restaurant.name}</h3>
                     <p className="text-gray-500">{restaurant.cuisine}</p>
+                    <span className="text-sm font-medium mt-1 block">
+                      {restaurant.vegOrNonVeg === 'Veg' && (
+                        <span className="text-green-600">🟢 Veg</span>
+                      )}
+                      {restaurant.vegOrNonVeg === 'Non-Veg' && (
+                        <span className="text-red-600">🔴 Non-Veg</span>
+                      )}
+                      {restaurant.vegOrNonVeg === 'Non-Veg & Veg' && (
+                        <span className="text-yellow-700">🟢🔴 Veg & Non-Veg</span>
+                      )}
+                    </span>
                   </div>
                   <div className="flex items-center bg-grubzap-yellow/20 px-2 py-1 rounded">
                     <Star className="h-4 w-4 fill-grubzap-yellow text-grubzap-yellow mr-1" />
