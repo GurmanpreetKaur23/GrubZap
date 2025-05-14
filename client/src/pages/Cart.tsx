@@ -30,7 +30,25 @@ const Cart = () => {
       try {
         const storedCart = localStorage.getItem("grubzap-cart");
         if (storedCart) {
-          setCartItems(JSON.parse(storedCart));
+          const parsedCart = JSON.parse(storedCart);
+          const normalizedCart = parsedCart.map((item: any) => {
+            let priceStr = String(item.price);
+            priceStr = priceStr.replace(/[^0-9.]/g, '');
+            let priceNum = parseFloat(priceStr);
+            if (isNaN(priceNum)) {
+              priceNum = 0;
+            }
+            let quantityNum = Number(item.quantity);
+            if (isNaN(quantityNum)) {
+              quantityNum = 0;
+            }
+            return {
+              ...item,
+              price: priceNum,
+              quantity: quantityNum,
+            };
+          });
+          setCartItems(normalizedCart);
         }
       } catch (error) {
         console.error("Error loading cart from localStorage:", error);

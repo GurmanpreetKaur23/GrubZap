@@ -32,7 +32,22 @@ const Payment = () => {
       try {
         const storedCart = localStorage.getItem('grubzap-cart');
         if (storedCart) {
-          setCartItems(JSON.parse(storedCart));
+          const parsedCart = JSON.parse(storedCart);
+          // Normalize price field to string with numeric value only
+          const normalizedCart = parsedCart.map((item: any) => {
+            let priceStr = String(item.price);
+            // Remove all non-numeric and non-decimal characters
+            priceStr = priceStr.replace(/[^0-9.]/g, '');
+            // If priceStr is empty or invalid, default to "0"
+            if (!priceStr || isNaN(parseFloat(priceStr))) {
+              priceStr = "0";
+            }
+            return {
+              ...item,
+              price: priceStr,
+            };
+          });
+          setCartItems(normalizedCart);
         }
       } catch (error) {
         console.error('Error loading cart from localStorage:', error);
@@ -46,8 +61,12 @@ const Payment = () => {
   
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.price.replace('$', ''));
-      return total + (price * item.quantity);
+      // Remove all non-numeric and non-decimal characters before parsing
+      const priceString = item.price.replace(/[^0-9.]/g, '');
+      const price = parseFloat(priceString);
+      const quantity = Number(item.quantity);
+      console.log(`Price string: ${priceString}, Parsed price: ${price}, Quantity: ${quantity}`);
+      return total + (isNaN(price) || isNaN(quantity) ? 0 : price * quantity);
     }, 0);
   };
   
@@ -56,7 +75,7 @@ const Payment = () => {
   };
   
   const calculateDeliveryFee = () => {
-    return cartItems.length > 0 ? 3.99 : 0;
+    return cartItems.length > 0 ? 300 : 0; // Changed delivery fee to INR equivalent approx 300 INR
   };
   
   const calculateTotal = () => {
@@ -246,7 +265,7 @@ const Payment = () => {
                       className="bg-grubzap-orange hover:bg-grubzap-darkOrange"
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Processing...' : `Pay $${calculateTotal().toFixed(2)}`}
+                      {isProcessing ? 'Processing...' : `Pay ₹${calculateTotal().toFixed(2)}`}
                     </Button>
                   </div>
                 </form>
@@ -263,9 +282,13 @@ const Payment = () => {
                           <span className="font-medium">{item.quantity} x </span>
                           {item.name}
                         </div>
-                        <span className="font-medium">
-                          ${(parseFloat(item.price.replace('$', '')) * item.quantity).toFixed(2)}
-                        </span>
+                    <span className="font-medium">
+                      {(() => {
+                        const priceString = item.price.replace(/[^0-9.]/g, '');
+                        const price = parseFloat(priceString);
+                        return `₹${(isNaN(price) ? 0 : price * item.quantity).toFixed(2)}`;
+                      })()}
+                    </span>
                       </div>
                     ))}
                   </div>
@@ -273,20 +296,20 @@ const Payment = () => {
                   <div className="border-t mt-4 pt-4 space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span>${calculateSubtotal().toFixed(2)}</span>
+                      <span>₹{calculateSubtotal().toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>${calculateTax(calculateSubtotal()).toFixed(2)}</span>
+                      <span>₹{calculateTax(calculateSubtotal()).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Fee</span>
-                      <span>${calculateDeliveryFee().toFixed(2)}</span>
+                      <span>₹{calculateDeliveryFee().toFixed(2)}</span>
                     </div>
                     <div className="border-t pt-3 mt-3">
                       <div className="flex justify-between font-semibold text-lg">
                         <span>Total</span>
-                        <span>${calculateTotal().toFixed(2)}</span>
+                        <span>₹{calculateTotal().toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
