@@ -5,10 +5,6 @@ import { Card, CardContent, CardFooter } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Star, Clock, MapPin, Phone } from 'lucide-react';
 
-// Replace with your actual Google Places API key
-const GOOGLE_PLACES_API_KEY = 'AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao';
-
-// Default fallback location (e.g., New York City)
 const DEFAULT_LOCATION = {
   latitude: 40.7128,
   longitude: -74.0060,
@@ -20,14 +16,12 @@ const Restaurants = () => {
   const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
-    // Check if Geolocation is supported
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser. Showing default location.');
       fetchRestaurants(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
       return;
     }
 
-    // Get user's current position
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -43,27 +37,25 @@ const Restaurants = () => {
   const fetchRestaurants = async (latitude, longitude) => {
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=5000&type=restaurant&key=${GOOGLE_PLACES_API_KEY}`
+        `/by-location?latitude=${latitude}&longitude=${longitude}&radius=10`
       );
-
-      const data = await response.json();
-      if (data.results) {
-        const formattedRestaurants = data.results.map((place, index) => ({
-          id: index,
-          name: place.name,
-          image: place.photos
-            ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${GOOGLE_PLACES_API_KEY}`
-            : 'https://via.placeholder.com/400',
-          cuisine: place.types ? place.types.join(', ') : 'N/A',
-          rating: place.rating || 'N/A',
-          reviewCount: place.user_ratings_total || 0,
-          deliveryTime: 'N/A',
-          deliveryFee: 'N/A',
-          location: place.vicinity || 'N/A',
-          phone: 'N/A',
-          featured: false,
+      const result = await response.json();
+      if (result.success && result.data) {
+        const formattedRestaurants = result.data.map((restaurant) => ({
+          id: restaurant._id,
+          name: restaurant.name,
+          image: restaurant.image || 'https://via.placeholder.com/400',
+          cuisine: restaurant.cuisine || 'N/A',
+          rating: restaurant.rating || 'N/A',
+          reviewCount: restaurant.reviewCount || 0,
+          deliveryTime: restaurant.deliveryTime || 'N/A',
+          deliveryFee: restaurant.deliveryFee || 'N/A',
+          location: restaurant.location?.address || 'N/A',
+          phone: restaurant.phone || 'N/A',
+          featured: restaurant.featured || false,
         }));
         setRestaurants(formattedRestaurants);
+        setLocationError(null);
       } else {
         setLocationError('No restaurants found near your location.');
       }
