@@ -75,7 +75,7 @@ const Payment = () => {
   };
   
   const calculateDeliveryFee = () => {
-    return cartItems.length > 0 ? 300 : 0; // Changed delivery fee to INR equivalent approx 300 INR
+    return cartItems.length > 0 ? 40 : 0; // Unified delivery fee to ₹40 as in Cart.tsx
   };
   
   const calculateTotal = () => {
