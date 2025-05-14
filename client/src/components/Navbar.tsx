@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "./ui/button"; // ✅ CORRECT RELATIVE PATH
-
+import { Button } from "./ui/button";
 import { ShoppingCart, Menu, Search, X } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,11 +11,12 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Update cart count from localStorage
   useEffect(() => {
     const updateCartCount = () => {
       try {
@@ -25,34 +27,46 @@ const Navbar = () => {
         setCartCount(0);
       }
     };
-
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
     return () => window.removeEventListener("storage", updateCartCount);
   }, []);
 
-  // Update isLoggedIn state based on jwtToken in localStorage or sessionStorage
   useEffect(() => {
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    console.log("Navbar: token in storage:", token);
     setIsLoggedIn(!!token);
-  }, [location]); // Re-run when location changes
+  }, [location]);
 
-  // Handle Logout
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove JWT token on logout
-    console.log("Navbar: token removed, logging out");
-    setIsLoggedIn(false); // Update state to false
-    navigate("/login"); // Redirect to login page
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setIsDropdownOpen(false);
+    navigate("/login");
+    window.location.reload();
   };
 
-  // Handle search toggle
   const handleSearchToggle = () => {
     setIsSearchOpen((prev) => !prev);
     setSearchQuery("");
   };
 
-  // Handle search submit
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -109,8 +123,8 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Right Side: Search, Cart, Auth */}
-        <div className="flex items-center gap-3">
+        {/* Right Side */}
+        <div className="flex items-center gap-3 relative" ref={dropdownRef}>
           {isSearchOpen ? (
             <form onSubmit={handleSearchSubmit} className="flex items-center">
               <input
@@ -166,12 +180,32 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <Button
-              className="hidden md:flex bg-grubzap-orange hover:bg-grubzap-darkOrange"
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
+            <>
+              <button
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                className="hidden md:flex h-10 w-10 rounded-full bg-grubzap-orange text-white items-center justify-center"
+                aria-label="User menu"
+              >
+                <FontAwesomeIcon icon={faUser} className="text-white text-lg" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-12 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-gray-700 hover:bg-grubzap-orange hover:text-white rounded-t-md"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-grubzap-orange hover:text-white rounded-b-md"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -210,12 +244,32 @@ const Navbar = () => {
                   </Link>
                 </>
               ) : (
-                <Button
-                  className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
+                <>
+                  <button
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full mt-2 py-2 rounded-md text-white font-bold flex justify-center"
+                    aria-label="User menu"
+                  >
+                    <FontAwesomeIcon icon={faUser} className="text-white text-lg" />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-gray-700 hover:bg-grubzap-orange hover:text-white rounded-t-md"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-gray-700 hover:bg-grubzap-orange hover:text-white rounded-b-md"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
