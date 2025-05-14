@@ -12,10 +12,10 @@ import SignUp from "./pages/SignUp";
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
-import ProductLanding from "./pages/ProductLanding";
+import Blog from "./pages/Blog";
 import Payment from './pages/Payment';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import Profile from "./pages/Profile";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,7 +36,8 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/productlanding" element={<ProductLanding />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Catch-All for 404 */}
