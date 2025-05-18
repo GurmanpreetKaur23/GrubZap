@@ -27,7 +27,7 @@ const App = () => {
     fetch("https://grubzap.onrender.com")  // your backend URL
       .then((res) => res.json())
       .then((data) => setMessage(data.message || "Welcome to GrubZap!"))
-      .catch(() => setMessage("Failed to fetch backend message."));
+      // .catch(() => setMessage("Failed to fetch backend message."));
   }, []);
 
   return (
