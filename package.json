@@ -1,0 +1,13 @@
+{
+  "name": "grubzap",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd backend && npm install",
+    "start-server": "cd backend && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
