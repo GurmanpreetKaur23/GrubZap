@@ -9,7 +9,7 @@ const teamMembers = [
     id: 1,
     name: "Gurnimrat Singh",
     role: "Founder & CEO",
-    image: "/src/pages/gurnimrat.jpg",
+    image: "/gurnimrat.jpg",  // updated path
     description: "Gurnimrat leads our tech team and has developed the innovative delivery algorithm that powers GrubZap.",
     linkedin: "https://www.linkedin.com/in/gurnimrat-singh/"
   },
@@ -17,7 +17,7 @@ const teamMembers = [
     id: 3,
     name: "Gurmanpreet Kaur",
     role: "Head of Operations",
-    image: "/src/pages/gurmanpreet.jpg",
+    image: "/gurmanpreet.jpg",  // updated path
     description: "Gurmanpreet ensures that GrubZap operations run smoothly and efficiently across all our service areas.",
     linkedin: "https://www.linkedin.com/in/gurmanpreet-kaur/"
   },
@@ -25,7 +25,7 @@ const teamMembers = [
     id: 4,
     name: "Guntas Singh",
     role: "Marketing Director",
-    image: "/src/pages/guntas.jpg",
+    image: "/guntas.jpg",  // updated path
     description: "Guntas crafts our brand strategy and handles all marketing initiatives to grow the GrubZap community.",
     linkedin: "https://www.linkedin.com/in/guntas15/"
   }
