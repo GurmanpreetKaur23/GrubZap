@@ -1,19 +1,63 @@
-
-import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import React, { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
+interface User {
+  name: string;
+  email: string;
+}
+
 const Contact = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Adjust if token is stored differently
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    // Fetch user profile from backend
+    fetch("/api/user/profile", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const data = await res.json();
+          setUser({ name: data.name, email: data.email });
+        } else {
+          console.error("Failed to fetch user profile");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching user profile:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic would go here
-    console.log('Contact form submitted');
+    // Your form submission logic here
+    console.log("Contact form submitted");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -27,7 +71,7 @@ const Contact = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="container mx-auto px-4 md:px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div>
@@ -35,22 +79,43 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" type="text" placeholder="Your name" className="mt-1" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Your name"
+                    className="mt-1"
+                    defaultValue={user?.name || ""}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="Your email" className="mt-1" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Your email"
+                    className="mt-1"
+                    defaultValue={user?.email || ""}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" type="text" placeholder="What's this about?" className="mt-1" />
+                  <Input
+                    id="subject"
+                    type="text"
+                    placeholder="What's this about?"
+                    className="mt-1"
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="message">Message</Label>
-                  <Textarea 
-                    id="message" 
-                    placeholder="Tell us how we can help..." 
+                  <Textarea
+                    id="message"
+                    placeholder="Tell us how we can help..."
                     className="mt-1 min-h-32"
+                    required
                   />
                 </div>
                 <Button className="bg-grubzap-orange hover:bg-grubzap-darkOrange w-full">
@@ -58,7 +123,7 @@ const Contact = () => {
                 </Button>
               </form>
             </div>
-            
+
             <div>
               <h2 className="text-2xl font-bold mb-6 text-grubzap-dark">Contact Information</h2>
               <div className="bg-gray-50 p-6 rounded-lg shadow-sm space-y-6">
@@ -70,7 +135,7 @@ const Contact = () => {
                     <p className="text-gray-600">+1 (555) 765-4321</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Mail className="h-5 w-5 text-grubzap-orange mr-3 mt-1" />
                   <div>
@@ -79,7 +144,7 @@ const Contact = () => {
                     <p className="text-gray-600">support@grubzap.com</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <MapPin className="h-5 w-5 text-grubzap-orange mr-3 mt-1" />
                   <div>
@@ -91,7 +156,7 @@ const Contact = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <Clock className="h-5 w-5 text-grubzap-orange mr-3 mt-1" />
                   <div>
@@ -102,7 +167,7 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-8 h-64 bg-gray-200 rounded-lg overflow-hidden">
                 {/* Map would go here - placeholder for now */}
                 <div className="h-full w-full flex items-center justify-center">

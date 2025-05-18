@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db.js"; // Ensure .js extension is added
-import foodRouter from "./routes/foodRoutes.js"; // Ensure .js extension is added
-import userRouter from "./routes/userRoute.js"; // Ensure .js extension is added
-import userModel from "./models/userModel.js"; // Ensure .js extension is added
+import { connectDB } from "./config/db.js";
+import foodRouter from "./routes/foodRoutes.js";
+import userRouter from "./routes/userRoute.js";
 
 dotenv.config();
 
@@ -19,6 +18,11 @@ connectDB();
 app.use("/api/food", foodRouter);
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
+
+// ✅ Add this test route
+app.get("/api/test", (_req, res) => {
+  res.json({ success: true, message: "API test route working" });
+});
 
 app.get("/", (_req, res) => {
   res.send("API WORKING");
