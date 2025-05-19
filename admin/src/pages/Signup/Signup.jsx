@@ -7,6 +7,7 @@ import './Signup.css';
 const Signup = ({ onSignup }) => {
   const [email, setEmail] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
+  const [location, setLocation] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
@@ -37,6 +38,13 @@ const Signup = ({ onSignup }) => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="signup-input"
+        />
+        <input
+          type="text"
+          placeholder="location"
+          value={location}
+          onChange={(e) => setRestaurantName(e.target.value)}
           className="signup-input"
         />
         <input
