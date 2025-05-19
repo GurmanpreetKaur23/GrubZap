@@ -5,14 +5,29 @@
   padding: 12px 15px;
   gap: 10px;
   border: 1px solid #a9a9a9;
-  font-size: 13px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.list-table-format:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  background-color: #fff;
 }
 .list-table-format img {
-  width: 50px;     /* adjust width as needed */
-  border-radius: 5px; /* optional: for rounded corners */
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 .list-table-format.title {
-  background-color: #a9a9a9;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  box-shadow: none;
 }
 @media (max-width: 600px) {
   .list-table-format {
@@ -22,5 +37,4 @@
   .list-table-format.title{
     display: none;
   }
-    
 }

@@ -1,12 +1,35 @@
-.navbar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 4%;
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #4a90e2;
+  padding: 10px 20px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.navbar .logo{
-    width: max(10%,80px);
+
+.logo {
+  height: 40px;
+  cursor: pointer;
 }
-.navbar .profile{
-    width: 40px;
+
+.profile {
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.logout-button {
+  background-color: #e94e77;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #d43d66;
 }
