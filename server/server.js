@@ -26,7 +26,7 @@ app.get("/api/test", (_req, res) => {
 
 // Root route returns JSON too (not plain text) to prevent JSON parse errors on client
 app.get("/", (_req, res) => {
-  res.json({ message: "API WORKING" });
+  res.json({ message: " " });
 });
 
 app.listen(port, () => {
