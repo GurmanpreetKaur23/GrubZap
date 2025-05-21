@@ -15,33 +15,51 @@ interface CartItem {
   quantity: number;
 }
 
-const deliveryFee = 40; // in rupees
-const taxRate = 0.05; // 5%
+const DELIVERY_FEE = 40; // Flat delivery fee if cart not empty
+const TAX_RATE = 0.05;   // 5% tax
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Retrieve token from storage for auth checks
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
 
+  // Helper: check login, redirect and show toast if not logged in
+  const requireLogin = (actionDesc: string) => {
+    if (!token) {
+      toast({
+        title: "Login required",
+        description: `Please login to ${actionDesc}.`,
+      });
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
+
+  // Load cart from localStorage and normalize data on mount
   useEffect(() => {
+    setIsMounted(true);
     const loadCartItems = () => {
       try {
         const storedCart = localStorage.getItem("grubzap-cart");
         if (storedCart) {
           const parsedCart = JSON.parse(storedCart);
           const normalizedCart = parsedCart.map((item: any) => {
-            let priceStr = String(item.price);
-            priceStr = priceStr.replace(/[^0-9.]/g, '');
+            // Clean and parse price, fallback to 0
+            let priceStr = String(item.price).replace(/[^0-9.]/g, '');
             let priceNum = parseFloat(priceStr);
-            if (isNaN(priceNum)) {
-              priceNum = 0;
-            }
+            if (isNaN(priceNum)) priceNum = 0;
+
+            // Ensure quantity is at least 1
             let quantityNum = Number(item.quantity);
-            if (isNaN(quantityNum)) {
-              quantityNum = 0;
-            }
+            if (isNaN(quantityNum) || quantityNum < 1) quantityNum = 1;
+
             return {
               ...item,
               price: priceNum,
@@ -60,20 +78,19 @@ const Cart = () => {
     loadCartItems();
   }, []);
 
+  // Sync cart changes to localStorage
+  useEffect(() => {
+    localStorage.setItem("grubzap-cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // Update cart state helper
   const updateCart = (newCart: CartItem[]) => {
     setCartItems(newCart);
-    localStorage.setItem("grubzap-cart", JSON.stringify(newCart));
   };
 
+  // Increase item quantity
   const increaseQuantity = (itemId: number) => {
-    if (!token) {
-      toast({
-        title: "Login required",
-        description: "Please login to modify your cart.",
-      });
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin("modify your cart")) return;
 
     const updatedCart = cartItems.map((item) =>
       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
@@ -81,15 +98,9 @@ const Cart = () => {
     updateCart(updatedCart);
   };
 
+  // Decrease item quantity (minimum 1)
   const decreaseQuantity = (itemId: number) => {
-    if (!token) {
-      toast({
-        title: "Login required",
-        description: "Please login to modify your cart.",
-      });
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin("modify your cart")) return;
 
     const updatedCart = cartItems.map((item) =>
       item.id === itemId && item.quantity > 1
@@ -99,15 +110,9 @@ const Cart = () => {
     updateCart(updatedCart);
   };
 
+  // Remove an item from cart
   const removeItem = (itemId: number) => {
-    if (!token) {
-      toast({
-        title: "Login required",
-        description: "Please login to remove items from your cart.",
-      });
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin("remove items from your cart")) return;
 
     const updatedCart = cartItems.filter((item) => item.id !== itemId);
     updateCart(updatedCart);
@@ -117,15 +122,9 @@ const Cart = () => {
     });
   };
 
+  // Clear entire cart
   const clearCart = () => {
-    if (!token) {
-      toast({
-        title: "Login required",
-        description: "Please login to clear your cart.",
-      });
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin("clear your cart")) return;
 
     updateCart([]);
     toast({
@@ -134,15 +133,17 @@ const Cart = () => {
     });
   };
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  };
+  // Calculate subtotal (sum of price * quantity)
+  const calculateSubtotal = () =>
+    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  const calculateTax = (subtotal: number) => subtotal * 0.08;
-  const calculateDeliveryFee = () => (cartItems.length > 0 ? 40 : 0); // ₹40 delivery fee
+  // Calculate tax on subtotal
+  const calculateTax = (subtotal: number) => subtotal * TAX_RATE;
+
+  // Delivery fee applied only if cart has items
+  const calculateDeliveryFee = () => (cartItems.length > 0 ? DELIVERY_FEE : 0);
+
+  // Calculate total amount including subtotal, tax, and delivery fee
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
     const tax = calculateTax(subtotal);
@@ -150,18 +151,13 @@ const Cart = () => {
     return subtotal + tax + deliveryFee;
   };
 
+  // Proceed to checkout page
   const proceedToCheckout = () => {
-    if (!token) {
-      toast({
-        title: "Login required",
-        description: "Please login to checkout.",
-      });
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin("checkout")) return;
     navigate("/payment");
   };
 
+  // Navigate back to menu for shopping
   const continueShopping = () => navigate("/menu");
 
   if (isLoading) {
@@ -206,6 +202,7 @@ const Cart = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Cart Items List */}
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-lg shadow-sm border p-6 space-y-4">
                   <div className="flex justify-between items-center pb-2 border-b">
@@ -227,7 +224,9 @@ const Cart = () => {
                     {cartItems.map((item) => (
                       <Card
                         key={item.id}
-                        className="overflow-hidden border-gray-100"
+                        className={`overflow-hidden border-gray-100 transition-opacity duration-700 ${
+                          isMounted ? "opacity-100" : "opacity-0"
+                        }`}
                       >
                         <CardContent className="p-0">
                           <div className="flex">
@@ -242,7 +241,7 @@ const Cart = () => {
                               <div className="flex justify-between items-start">
                                 <h3 className="font-medium">{item.name}</h3>
                                 <span className="font-semibold text-grubzap-orange">
-                                  ₹{item.price}
+                                  ₹{item.price.toFixed(2)}
                                 </span>
                               </div>
                               <div className="mt-auto flex justify-between items-center">
@@ -252,6 +251,7 @@ const Cart = () => {
                                     size="icon"
                                     className="h-8 w-8"
                                     onClick={() => decreaseQuantity(item.id)}
+                                    disabled={item.quantity === 1}
                                   >
                                     <Minus className="h-4 w-4" />
                                   </Button>
@@ -285,6 +285,7 @@ const Cart = () => {
                 </div>
               </div>
 
+              {/* Order Summary */}
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-24">
                   <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
@@ -295,9 +296,7 @@ const Cart = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>
-                        ₹{calculateTax(calculateSubtotal()).toFixed(2)}
-                      </span>
+                      <span>₹{calculateTax(calculateSubtotal()).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Fee</span>
@@ -320,22 +319,20 @@ const Cart = () => {
                     <Button
                       variant="outline"
                       className="w-full"
-                  onClick={continueShopping}
-                >
-                  Continue Shopping
-                </Button>
+                      onClick={continueShopping}
+                    >
+                      Continue Shopping
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </main>
+      <Footer />
     </div>
-  </main>
-  <Footer />
-</div>
-);
+  );
 };
 
 export default Cart;
-
-

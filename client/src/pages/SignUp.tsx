@@ -34,7 +34,7 @@ const SignUp = () => {
 
   const onSubmit = async (data: SignUpFormValues) => {
     try {
-      const response = await fetch('http://localhost:4000/api/user/register', {
+      const response = await fetch('https://grubzap.onrender.com/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

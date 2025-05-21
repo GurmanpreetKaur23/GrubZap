@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: grubzap-frontend
+    env: node
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
