@@ -19,13 +19,14 @@ app.use("/api/food", foodRouter);
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 
-// ✅ Add this test route
+// API test route returns JSON
 app.get("/api/test", (_req, res) => {
   res.json({ success: true, message: "API test route working" });
 });
 
+// Root route returns JSON too (not plain text) to prevent JSON parse errors on client
 app.get("/", (_req, res) => {
-  res.send("API WORKING");
+  res.json({ message: "API WORKING" });
 });
 
 app.listen(port, () => {
