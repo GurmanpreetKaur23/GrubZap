@@ -2,7 +2,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://grub-zap.onrender.com/)
 [![Tech Stack](https://img.shields.io/badge/Tech%20Stack-MERN-blueviolet?style=for-the-badge)](#tech-stack)
-[![License](https://img.shields.io/github/license/GurmanpreetKaur23/GrubZap?style=for-the-badge)](LICENSE)
+
 
 **GrubZap** is an online food ordering platform where users can explore nearby restaurants, view dynamic menus, and place food orders with ease. It also includes an admin panel for restaurant management.
 
@@ -93,12 +93,9 @@ Role: Manage menus, orders, users
 
 ## 👩‍💻 Authors
 
-**Gurmanpreet Kaur**  
-🔗 [LinkedIn](https://www.linkedin.com/in/gurmanpreet-kaur) | 💻 [GitHub](https://github.com/GurmanpreetKaur23)
+**Gurmanpreet Kaur**  🔗 [LinkedIn](https://www.linkedin.com/in/gurmanpreet-kaur) | 💻 [GitHub](https://github.com/GurmanpreetKaur23)
 
-**Gurnimrat Singh**
-🔗 [LinkedIn](https://www.linkedin.com/in/gurnimrat-singh) | 💻 [GitHub](https://github.com/GurmanpreetKaur23)
+**Gurnimrat Singh**   🔗 [LinkedIn](https://www.linkedin.com/in/gurnimrat-singh) | 💻 [GitHub](https://github.com/gurnimrat-singh1)
 
-**Guntas Singh**
-🔗 [LinkedIn](https://www.linkedin.com/in/guntas15) | 💻 [GitHub](https://github.com/GurmanpreetKaur23)
+**Guntas Singh**      🔗 [LinkedIn](https://www.linkedin.com/in/guntas15) | 💻 [GitHub](https://github.com/guntas15)
 
