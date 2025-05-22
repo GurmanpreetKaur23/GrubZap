@@ -360,6 +360,8 @@ const Cart = () => {
                       </div>
                     )}
                   </div>
+                  <h2 className="text-xl font-semibold mb-4">Complete Summary</h2>
+
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
