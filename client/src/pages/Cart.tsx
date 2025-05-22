@@ -22,6 +22,9 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [promoCode, setPromoCode] = useState(""); // Promo code input
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null); // Applied promo code
+  const [discount, setDiscount] = useState(0); // Discount value
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -83,6 +86,38 @@ const Cart = () => {
     localStorage.setItem("grubzap-cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Promo code validation logic
+  const validPromoCodes: { [code: string]: number } = {
+    GGG10: 0.10, // 10% discount
+    GRUB20:0.20, // 20% discount
+    // Add more codes here
+  };
+
+
+  const handleApplyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    if (appliedPromo) {
+      toast({
+        title: "Promo code already applied",
+        description: `You have already applied "${appliedPromo}".`,
+      });
+      return;
+    }
+    if (validPromoCodes[code]) {
+      setAppliedPromo(code);
+      setDiscount(validPromoCodes[code]);
+      toast({
+        title: "Promo code applied!",
+        description: `You got ${(validPromoCodes[code] * 100).toFixed(0)}% off.`,
+      });
+    } else {
+      toast({
+        title: "Invalid promo code",
+        description: "Please enter a valid promo code.",
+      });
+    }
+  };
+
   // Update cart state helper
   const updateCart = (newCart: CartItem[]) => {
     setCartItems(newCart);
@@ -137,18 +172,24 @@ const Cart = () => {
   const calculateSubtotal = () =>
     cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  // Calculate tax on subtotal
-  const calculateTax = (subtotal: number) => subtotal * TAX_RATE;
+  // Calculate discount amount
+  const calculateDiscount = (subtotal: number) =>
+    appliedPromo && discount > 0 ? subtotal * discount : 0;
+
+  // Calculate tax on subtotal after discount
+  const calculateTax = (subtotal: number, discountAmt: number) =>
+    (subtotal - discountAmt) * TAX_RATE;
 
   // Delivery fee applied only if cart has items
   const calculateDeliveryFee = () => (cartItems.length > 0 ? DELIVERY_FEE : 0);
 
-  // Calculate total amount including subtotal, tax, and delivery fee
+  // Calculate total amount including subtotal, discount, tax, and delivery fee
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    const tax = calculateTax(subtotal);
+    const discountAmt = calculateDiscount(subtotal);
+    const tax = calculateTax(subtotal, discountAmt);
     const deliveryFee = calculateDeliveryFee();
-    return subtotal + tax + deliveryFee;
+    return subtotal - discountAmt + tax + deliveryFee;
   };
 
   // Proceed to checkout page
@@ -289,14 +330,56 @@ const Cart = () => {
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-24">
                   <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                  {/* Promo code input */}
+                  <div className="mb-4">
+                    <label className="block text-gray-700 font-medium mb-1" htmlFor="promo">
+                      Promo Code
+                    </label>
+                    <div className="flex space-x-2">
+                      <input
+                        id="promo"
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="border rounded px-3 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-grubzap-orange"
+                        placeholder="Enter promo code"
+                        disabled={!!appliedPromo}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleApplyPromo}
+                        disabled={!!appliedPromo || !promoCode.trim()}
+                        className="bg-grubzap-orange hover:bg-grubzap-darkOrange"
+                      >
+                        {appliedPromo ? "Applied" : "Apply"}
+                      </Button>
+                    </div>
+                    {appliedPromo && (
+                      <div className="text-green-600 text-sm mt-1">
+                        Promo "{appliedPromo}" applied!
+                      </div>
+                    )}
+                  </div>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
                       <span>₹{calculateSubtotal().toFixed(2)}</span>
                     </div>
+                    {appliedPromo && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Discount ({(discount * 100).toFixed(0)}%)</span>
+                        <span>-₹{calculateDiscount(calculateSubtotal()).toFixed(2)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>₹{calculateTax(calculateSubtotal()).toFixed(2)}</span>
+                      <span>
+                        ₹
+                        {calculateTax(
+                          calculateSubtotal(),
+                          calculateDiscount(calculateSubtotal())
+                        ).toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Delivery Fee</span>
