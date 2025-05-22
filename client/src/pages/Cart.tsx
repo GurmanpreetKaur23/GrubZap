@@ -288,7 +288,7 @@ const Cart = () => {
               {/* Order Summary */}
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-sm border p-6 sticky top-24">
-                  <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+                  <h2 className="text-xl font-semibold mb-4">Complete Summary</h2>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
